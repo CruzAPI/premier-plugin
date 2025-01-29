@@ -1,0 +1,6 @@
+name: PremierPlugin
+version: '1.0'
+main: net.premierstudios.PremierPlugin
+api-version: '1.21.4'
+authors:
+  - CruzAPI
