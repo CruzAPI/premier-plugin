@@ -1,0 +1,15 @@
+title: "Marketplace"
+size: 54
+items:
+  BLACK_GLASS:
+    itemstack:
+      ==: org.bukkit.inventory.ItemStack
+      v: 4189
+      type: GLASS_PANE
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: '" "'
+    slots: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+#    name-translation-key: ""
+#    lore-translation-key: ""

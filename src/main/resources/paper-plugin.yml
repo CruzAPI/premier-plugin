@@ -1,6 +1,11 @@
-name: PremierPlugin
+name: Premier
 version: '1.0'
 main: net.premierstudios.PremierPlugin
+bootstrapper: net.premierstudios.PremierPluginBootstrap
 api-version: '1.21.4'
 authors:
   - CruzAPI
+dependencies:
+  server:
+    Vault:
+      load: BEFORE

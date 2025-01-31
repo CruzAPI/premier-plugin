@@ -1,0 +1,15 @@
+title: "Blackmarket"
+size: 9
+items:
+  BLACK_GLASS:
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+
+#  - slots: [ 12 ]
+#    material: BOW
+#    name: "&aArco"
+#    lore:
+#      - "&7Para atirar flechas!"
+#    actions:
+#      left-click: "give %player% bow 1"
+#      right-click: "message %player% Você clicou com o botão direito no arco!"
