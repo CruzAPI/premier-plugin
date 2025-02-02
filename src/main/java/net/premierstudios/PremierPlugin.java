@@ -13,9 +13,7 @@ import net.premierstudios.command.TestCommand;
 import net.premierstudios.listener.PlayerListener;
 import net.premierstudios.listener.PremierInventoryListener;
 import net.premierstudios.listener.PremierPlayerListener;
-import net.premierstudios.service.MessageBundleLoader;
-import net.premierstudios.service.PropertiesLoader;
-import net.premierstudios.service.ResourceCopier;
+import net.premierstudios.service.*;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,6 +31,8 @@ public class PremierPlugin extends JavaPlugin
 	private Economy economy;
 	private Permission permission;
 	
+	private MarketManager marketManager;
+	private MarketTransactionLogger marketTransactionLogger;
 	private MessageBundleLoader messageBundleLoader;
 	private PropertiesLoader propertiesLoader;
 	private ResourceCopier resourceCopier;
@@ -45,6 +45,8 @@ public class PremierPlugin extends JavaPlugin
 		economy = getProvider(Economy.class);
 		permission = getProvider(Permission.class);
 		
+		marketManager = new MarketManager(this);
+		marketTransactionLogger = new MarketTransactionLogger(this);
 		messageBundleLoader = new MessageBundleLoader(this);
 		propertiesLoader = new PropertiesLoader(this);
 		resourceCopier = new ResourceCopier(this);

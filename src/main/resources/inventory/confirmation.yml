@@ -1,0 +1,19 @@
+title: "Confirmation"
+type: HOPPER
+items:
+  CONFIRM:
+    itemstack:
+      ==: org.bukkit.inventory.ItemStack
+      v: 4189
+      type: LIME_CONCRETE
+    slots: [ 1 ]
+    name-translation-key: 'inventory.confirmation.confirm.name'
+    bundle: 'message/message'
+  CANCEL:
+    itemstack:
+      ==: org.bukkit.inventory.ItemStack
+      v: 4189
+      type: RED_CONCRETE
+    slots: [ 3 ]
+    name-translation-key: 'inventory.confirmation.cancel.name'
+    bundle: 'message/message'

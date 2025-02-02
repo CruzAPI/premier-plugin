@@ -21,21 +21,15 @@ public class PremierPlayer implements Messageable
 {
 	private final PremierPlugin premierPlugin;
 	
-	private PremierInventory premierInventory;
+	private PremierInventory<?> premierInventory;
 	
 	@Delegate
 	private final Player player;
 	
-	public void openPremierInventory(PremierInventory premierInventory)
+	public void openPremierInventory(PremierInventory<?> premierInventory)
 	{
-		this.premierInventory = premierInventory;
 		premierInventory.reset();
-		player.openInventory(premierInventory.getInventory());
-	}
-	
-	public void closePremierInventory()
-	{
-		this.premierInventory = null;
+		premierInventory.open();
 	}
 	
 	public Inventory createInventory(InventoryType type, String title)

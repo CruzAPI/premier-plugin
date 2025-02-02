@@ -49,16 +49,23 @@ public class PremierInventoryListener implements Listener
 		
 		PremierPlayer premierPlayer = premierPlugin.getPlayerListener().get(player);
 		
-//		onCurrentItemHelper(iconicInventory, event);
+		PremierInventory<?> premierInventory = premierPlayer.getPremierInventory();
+		
+		if(premierInventory == null)
+		{
+			return;
+		}
+		
+		onCurrentItemHelper(premierInventory, event);
 	}
-//
-//	private <I extends IconicInventory<I>> void onCurrentItemHelper(IconicInventory<I> iconicInventory, InventoryClickEvent event)
-//	{
-//		Optional.ofNullable(event.getCurrentItem())
-//				.map(ItemStack::getItemMeta)
-//				.map(ItemMeta::getPersistentDataContainer)
-//				.map(container -> container.get(iconicInventory.getIconEnumNamespacedKey(), STRING))
-//				.map(iconicInventory::getIcon)
-//				.ifPresent(icon -> icon.onCurrentItemClick(iconicInventory.getIconicInventory(), event));
-//	}
+
+	private <I extends PremierInventory<I>> void onCurrentItemHelper(PremierInventory<I> premierInventory, InventoryClickEvent event)
+	{
+		Optional.ofNullable(event.getCurrentItem())
+				.map(ItemStack::getItemMeta)
+				.map(ItemMeta::getPersistentDataContainer)
+				.map(container -> container.get(premierInventory.getInventoryConfig().getIconNamespacedKey(), STRING))
+				.map(premierInventory::getIcon)
+				.ifPresent(icon -> icon.onCurrentItemClick(premierInventory.self(), event));
+	}
 }

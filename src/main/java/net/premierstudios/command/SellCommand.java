@@ -3,22 +3,17 @@ package net.premierstudios.command;
 import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import lombok.RequiredArgsConstructor;
-import net.premierstudios.MarketItem;
 import net.premierstudios.PremierPlugin;
+import net.premierstudios.market.MarketItem;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RequiredArgsConstructor
 public class SellCommand implements BasicCommand
 {
 	private final PremierPlugin premierPlugin;
-	
-	private List<MarketItem> marketItemList = new ArrayList<>();
 	
 	@Override
 	public void execute(CommandSourceStack commandSourceStack, String[] args)
@@ -56,7 +51,10 @@ public class SellCommand implements BasicCommand
 				return;
 			}
 			
-			marketItemList.add(new MarketItem(player.getUniqueId(), itemToSell.clone(), price));
+			MarketItem marketItem = new MarketItem(player.getUniqueId(), itemToSell.clone(), price);
+			
+			premierPlugin.getMarketManager().addMarketItem(marketItem);
+			
 			itemToSell.setAmount(0);
 			player.sendMessage("Your item has been added to marketplace.");
 		}

@@ -1,15 +1,26 @@
 title: "Blackmarket"
-size: 9
+size: 54
 items:
+  MARKETPLACE:
+    itemstack:
+      ==: org.bukkit.inventory.ItemStack
+      v: 4189
+      type: CHEST
+    slots: [ 4 ]
+    name-translation-key: 'inventory.blackmarket.marketplace.name'
+    lore-translation-key: 'inventory.blackmarket.marketplace.lore'
+    bundle: 'message/message'
   BLACK_GLASS:
-    material: BLACK_STAINED_GLASS_PANE
-    name: " "
-
-#  - slots: [ 12 ]
-#    material: BOW
-#    name: "&aArco"
-#    lore:
-#      - "&7Para atirar flechas!"
-#    actions:
-#      left-click: "give %player% bow 1"
-#      right-click: "message %player% Você clicou com o botão direito no arco!"
+    itemstack:
+      ==: org.bukkit.inventory.ItemStack
+      v: 4189
+      type: BLACK_STAINED_GLASS_PANE
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: ' '
+    slots: [ 0, 1, 2, 3, 5, 6, 7, 8, 45, 46, 47, 48, 49, 50, 51, 52, 53 ]
+  MARKET_ITEM:
+    slots: [ 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 ]
+    lore-translation-key: 'inventory.blackmarket.market-item.lore'
+    bundle: 'message/message'

@@ -8,7 +8,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import net.premierstudios.functional.ContextBuilder;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import java.util.logging.Level;
 import static java.util.Collections.singletonList;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
-public interface TranslatableMessage<C>
+public interface TranslatableMessage
 {
 	Locale DEFAULT_LOCALE = Locale.US;
 	Set<Locale> SUPPORTED_LOCALES = Set.of
@@ -36,39 +35,32 @@ public interface TranslatableMessage<C>
 	
 	String getKey();
 	MessageBundle getMessageBundle(Locale locale);
-	TagResolver[] translateArguments(Locale locale, C context);
 	Plugin getPlugin();
 	
 	String name();
-	C newContext();
 	
-	default TranslatableMessageContext<C> withContext(ContextBuilder<C> contextBuilder)
+	default TranslatableMessageContext withContext(MessageContext messageContext)
 	{
-		return withContext(contextBuilder.build(newContext()));
+		return new TranslatableMessageContext(this, messageContext);
 	}
 	
-	default TranslatableMessageContext<C> withContext(C context)
+	default TranslatableMessageContext withoutContext()
 	{
-		return new TranslatableMessageContext<>(this, context);
+		return withContext(null);
 	}
 	
-	default TranslatableMessageContext<C> withoutContext()
+	default String translatePlain(Messageable messageable, MessageContext messageContext)
 	{
-		return withContext((C) null);
+		return translatePlain(messageable.getLocale(), messageContext);
 	}
 	
-	default String translatePlain(Messageable messageable, C context)
-	{
-		return translatePlain(messageable.getLocale(), context);
-	}
-	
-	default String translatePlain(Locale locale, C context)
+	default String translatePlain(Locale locale, MessageContext messageContext)
 	{
 		locale = getSupportedLocaleOrDefault(locale);
 		
 		try
 		{
-			return translatePlain(getMessageBundle(locale), context);
+			return translatePlain(getMessageBundle(locale), messageContext);
 		}
 		catch(Exception e)
 		{
@@ -79,27 +71,27 @@ public interface TranslatableMessage<C>
 			}
 			
 			getPlugin().getLogger().log(Level.WARNING, "Failed to translate plain message! Plugin will try to translate it to default locale as fallback. locale=" + locale + " key=" + getKey() + " name=" + name(), e);
-			return translatePlain(DEFAULT_LOCALE, context);
+			return translatePlain(DEFAULT_LOCALE, messageContext);
 		}
 	}
 	
-	private String translatePlain(MessageBundle messageBundle, C context)
+	private String translatePlain(MessageBundle messageBundle, MessageContext messageContext)
 	{
-		return PlainTextComponentSerializer.plainText().serialize(translate(messageBundle, context));
+		return PlainTextComponentSerializer.plainText().serialize(translate(messageBundle, messageContext));
 	}
 	
-	default String translateLegacy(Messageable messageable, C context)
+	default String translateLegacy(Messageable messageable, MessageContext messageContext)
 	{
-		return translateLegacy(messageable.getLocale(), context);
+		return translateLegacy(messageable.getLocale(), messageContext);
 	}
 	
-	default String translateLegacy(Locale locale, C context)
+	default String translateLegacy(Locale locale, MessageContext messageContext)
 	{
 		locale = getSupportedLocaleOrDefault(locale);
 		
 		try
 		{
-			return translateLegacy(getMessageBundle(locale), context);
+			return translateLegacy(getMessageBundle(locale), messageContext);
 		}
 		catch(Exception e)
 		{
@@ -110,27 +102,37 @@ public interface TranslatableMessage<C>
 			}
 			
 			getPlugin().getLogger().log(Level.WARNING, "Failed to translate legacy message! Plugin will try to translate it to default locale as fallback. locale=" + locale + " key=" + getKey() + " name=" + name(), e);
-			return translateLegacy(DEFAULT_LOCALE, context);
+			return translateLegacy(DEFAULT_LOCALE, messageContext);
 		}
 	}
 	
-	private String translateLegacy(MessageBundle messageBundle, C context)
+	private String translateLegacy(MessageBundle messageBundle, MessageContext messageContext)
 	{
-		return LegacyComponentSerializer.legacySection().serialize(translate(messageBundle, context));
+		return LegacyComponentSerializer.legacySection().serialize(translate(messageBundle, messageContext));
 	}
 	
-	default Component translate(Messageable messageable, C context)
+	default Component translate(Messageable messageable)
 	{
-		return translate(messageable.getLocale(), context);
+		return translate(messageable, null);
 	}
 	
-	default Component translate(Locale locale, C context)
+	default Component translate(Messageable messageable, MessageContext messageContext)
+	{
+		return translate(messageable.getLocale(), messageContext);
+	}
+	
+	default Component translate(Locale locale)
+	{
+		return translate(locale, null);
+	}
+	
+	default Component translate(Locale locale, MessageContext messageContext)
 	{
 		locale = getSupportedLocaleOrDefault(locale);
 		
 		try
 		{
-			return translate(getMessageBundle(locale), context);
+			return translate(getMessageBundle(locale), messageContext);
 		}
 		catch(Exception e)
 		{
@@ -141,13 +143,15 @@ public interface TranslatableMessage<C>
 			}
 			
 			getPlugin().getLogger().log(Level.WARNING, "Failed to translate message! Plugin will try to translate it to default locale as fallback. locale=" + locale + " key=" + getKey() + " name=" + name(), e);
-			return translate(DEFAULT_LOCALE, context);
+			return translate(DEFAULT_LOCALE, messageContext);
 		}
 	}
 	
-	private Component translate(MessageBundle messageBundle, C context)
+	private Component translate(MessageBundle messageBundle, MessageContext messageContext)
 	{
-		return translate(messageBundle, translateArguments(messageBundle.getLocale(), context));
+		return messageContext == null
+				? translate(messageBundle)
+				: translate(messageBundle, messageContext.translateArguments(messageBundle.getLocale()));
 	}
 	
 	private Component translate(MessageBundle messageBundle, TagResolver... tagResolvers)
@@ -156,18 +160,23 @@ public interface TranslatableMessage<C>
 		return deserialize(input, tagResolvers);
 	}
 	
-	default List<Component> translateLines(Messageable messageable, C context)
+	default List<Component> translateLines(Messageable messageable)
 	{
-		return translateLines(messageable.getLocale(), context);
+		return translateLines(messageable, null);
 	}
 	
-	default List<Component> translateLines(Locale locale, C context)
+	default List<Component> translateLines(Messageable messageable, MessageContext messageContext)
+	{
+		return translateLines(messageable.getLocale(), messageContext);
+	}
+	
+	default List<Component> translateLines(Locale locale, MessageContext messageContext)
 	{
 		locale = getSupportedLocaleOrDefault(locale);
 		
 		try
 		{
-			return translateLines(getMessageBundle(locale), context);
+			return translateLines(getMessageBundle(locale), messageContext);
 		}
 		catch(Exception e)
 		{
@@ -178,13 +187,15 @@ public interface TranslatableMessage<C>
 			}
 			
 			getPlugin().getLogger().log(Level.WARNING, "Failed to translate message lines! Plugin will try to translate it to default locale as fallback. locale=" + locale + " key=" + getKey() + " name=" + name(), e);
-			return translateLines(DEFAULT_LOCALE, context);
+			return translateLines(DEFAULT_LOCALE, messageContext);
 		}
 	}
 	
-	private List<Component> translateLines(MessageBundle messageBundle, C context)
+	private List<Component> translateLines(MessageBundle messageBundle, MessageContext messageContext)
 	{
-		return translateLines(messageBundle, translateArguments(messageBundle.getLocale(), context));
+		return messageContext == null
+				? translateLines(messageBundle)
+				: translateLines(messageBundle, messageContext.translateArguments(messageBundle.getLocale()));
 	}
 	
 	private List<Component> translateLines(MessageBundle messageBundle, TagResolver... tagResolvers)

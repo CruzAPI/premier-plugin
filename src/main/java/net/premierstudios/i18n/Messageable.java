@@ -8,30 +8,30 @@ public interface Messageable
 {
 	void sendMessage(Component component);
 	
-	default <C> void sendMessage(TranslatableMessage<C> translatableMessage)
+	default void sendMessage(TranslatableMessage translatableMessage)
 	{
-		sendMessage(translatableMessage, (C) null);
+		sendMessage(translatableMessage, null);
 	}
 	
-	default <C> void sendMessage(TranslatableMessage<C> translatableMessage, C context)
+	default void sendMessage(TranslatableMessage translatableMessage, MessageContext messageContext)
 	{
-		sendMessage(translatableMessage.translate(getLocale(), context));
+		sendMessage(translatableMessage.translate(getLocale(), messageContext));
 	}
 	
-	default <C> void sendMessage(boolean flag, TranslatableMessage<C> translatableMessage)
+	default void sendMessage(boolean flag, TranslatableMessage translatableMessage)
 	{
 		sendMessage(flag, translatableMessage, null);
 	}
 	
-	default <C> void sendMessage(boolean flag, TranslatableMessage<C> translatableMessage, C context)
+	default void sendMessage(boolean flag, TranslatableMessage translatableMessage, MessageContext messageContext)
 	{
 		if(flag)
 		{
-			sendMessage(translatableMessage, context);
+			sendMessage(translatableMessage, messageContext);
 		}
 	}
 	
-	default <C> void sendMessage(boolean flag, TranslatableMessageContext<C> message)
+	default void sendMessage(boolean flag, TranslatableMessageContext message)
 	{
 		if(flag)
 		{
@@ -39,9 +39,9 @@ public interface Messageable
 		}
 	}
 	
-	default <C> void sendMessage(TranslatableMessageContext<C> message)
+	default void sendMessage(TranslatableMessageContext message)
 	{
-		sendMessage(message.getTranslatableMessage(), message.getContext());
+		sendMessage(message.getTranslatableMessage(), message.getMessageContext());
 	}
 	
 	Locale getLocale();

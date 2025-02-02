@@ -1,31 +1,36 @@
 package net.premierstudios.message;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.premierstudios.PremierPlugin;
 import net.premierstudios.i18n.MessageBundle;
+import net.premierstudios.i18n.MessageContext;
+import net.premierstudios.i18n.MessageUtil;
 import net.premierstudios.i18n.TranslatableMessage;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.function.BiFunction;
+
+import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.number;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed;
+import static net.premierstudios.i18n.MessageUtil.displayName;
 
 @RequiredArgsConstructor
 @Getter
-public enum PremierMessage implements TranslatableMessage<PremierMessage.Context>
+public enum PremierMessage implements TranslatableMessage
 {
 	TEST("test"),
 	
 	;
 	
 	private final String key;
-	private final BiFunction<Locale, Context, TagResolver[]> translateArgumentsBiFunction;
-	
-	PremierMessage(String key)
-	{
-		this(key, (locale, context) -> new TagResolver[0]);
-	}
 	
 	@Override
 	public MessageBundle getMessageBundle(Locale locale)
@@ -34,25 +39,50 @@ public enum PremierMessage implements TranslatableMessage<PremierMessage.Context
 	}
 	
 	@Override
-	public TagResolver[] translateArguments(Locale locale, Context context)
-	{
-		return translateArgumentsBiFunction.apply(locale, context);
-	}
-	
-	@Override
 	public Plugin getPlugin()
 	{
 		return PremierPlugin.INSTANCE;
 	}
 	
-	@Override
-	public Context newContext()
+	@Builder
+	public static class Context extends MessageContext
 	{
-		return new Context();
-	}
-	
-	public static class Context
-	{
-	
+		private Player player;
+		private Double originalPrice;
+		private Double price;
+		private OfflinePlayer seller;
+		
+		@Override
+		public TagResolver[] translateArguments(Locale locale)
+		{
+			List<TagResolver> tagResolverList = new ArrayList<>();
+			
+			if(locale != null)
+			{
+				tagResolverList.add(parsed("locale", locale.toLanguageTag()));
+			}
+			
+			if(player != null)
+			{
+				tagResolverList.add(component("player", player.displayName()));
+			}
+			
+			if(seller != null)
+			{
+				tagResolverList.add(component("seller", displayName(seller)));
+			}
+			
+			if(originalPrice != null)
+			{
+				tagResolverList.add(number("original_price", originalPrice));
+			}
+			
+			if(price != null)
+			{
+				tagResolverList.add(number("price", price));
+			}
+			
+			return tagResolverList.toArray(TagResolver[]::new);
+		}
 	}
 }

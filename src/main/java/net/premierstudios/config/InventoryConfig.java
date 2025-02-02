@@ -2,6 +2,7 @@ package net.premierstudios.config;
 
 import com.google.common.base.Preconditions;
 import net.premierstudios.player.PremierPlayer;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -9,14 +10,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static net.premierstudios.util.PremierNamespacedKey.ICON_NAME;
 import static org.bukkit.persistence.PersistentDataType.STRING;
 
 public interface InventoryConfig extends Config
 {
+	NamespacedKey getIconNamespacedKey();
+	
 	default String getTitle()
 	{
 		return getYamlConfiguration().getString("title");
@@ -29,10 +31,11 @@ public interface InventoryConfig extends Config
 	
 	default InventoryType getInventoryType()
 	{
-		return getYamlConfiguration().getObject("type", InventoryType.class);
+		String typeName = getYamlConfiguration().getString("type");
+		return typeName == null ? null : InventoryType.valueOf(typeName);
 	}
 	
-	default Map<String, ItemStack> getItemsByKey()
+	default Map<String, ItemConfig> getItemConfigsByKey()
 	{
 		ConfigurationSection section = getYamlConfiguration().getConfigurationSection("items");
 		
@@ -41,49 +44,28 @@ public interface InventoryConfig extends Config
 			return Collections.emptyMap();
 		}
 		
-		Map<String, ItemStack> items = new HashMap<>();
+		Map<String, ItemConfig> itemConfigsByKey = new LinkedHashMap<>();
 		
 		for(String key : section.getKeys(false))
 		{
-			ItemStack item = section.getItemStack("itemstack", ItemStack.empty());
+			ItemStack item = section.getItemStack(key + ".itemstack", ItemStack.empty());
 			ItemMeta meta = item.getItemMeta();
 			
 			if(meta != null)
 			{
-				meta.getPersistentDataContainer().set(ICON_NAME, STRING, key);
+				meta.getPersistentDataContainer().set(getIconNamespacedKey(), STRING, key);
 				item.setItemMeta(meta);
 			}
 			
-			items.put(key, item);
+			String bundleBaseName =  section.getString(key + ".bundle", "message/message");
+			String nameTranslationKey = section.getString(key + ".name-translation-key");
+			String loreTranslationKey = section.getString(key + ".lore-translation-key");
+			int[] slots = section.getIntegerList(key + ".slots").stream().mapToInt(Integer::intValue).toArray();
+			
+			itemConfigsByKey.put(key, new ItemConfig(key, item, bundleBaseName, nameTranslationKey, loreTranslationKey, slots));
 		}
 		
-		return items;
-	}
-	
-	default Map<Integer, ItemStack> getItemsBySlot()
-	{
-		ConfigurationSection section = getYamlConfiguration().getConfigurationSection("items");
-		
-		if(section == null)
-		{
-			return Collections.emptyMap();
-		}
-		
-		Map<String, ItemStack> itemsByKey = getItemsByKey();
-		Map<Integer, ItemStack> itemsBySlot = new HashMap<>();
-		
-		for(String key : section.getKeys(false))
-		{
-			for(Integer slot : section.getIntegerList("slots"))
-			{
-				if(slot != null)
-				{
-					itemsBySlot.put(slot, itemsByKey.getOrDefault(key, ItemStack.empty()));
-				}
-			}
-		}
-		
-		return itemsBySlot;
+		return itemConfigsByKey;
 	}
 	
 	default Inventory createInventory(PremierPlayer premierPlayer)

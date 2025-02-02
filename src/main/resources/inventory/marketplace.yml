@@ -1,7 +1,20 @@
 title: "Marketplace"
 size: 54
 items:
-  BLACK_GLASS:
+  BLACKMARKET:
+    itemstack:
+      ==: org.bukkit.inventory.ItemStack
+      v: 4189
+      type: ENDER_CHEST
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        display-name: ' '
+    slots: [ 4 ]
+    name-translation-key: 'inventory.marketplace.blackmarket.name'
+    lore-translation-key: 'inventory.marketplace.blackmarket.lore'
+    bundle: 'message/message'
+  GLASS:
     itemstack:
       ==: org.bukkit.inventory.ItemStack
       v: 4189
@@ -9,7 +22,9 @@ items:
       meta:
         ==: ItemMeta
         meta-type: UNSPECIFIC
-        display-name: '" "'
-    slots: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
-#    name-translation-key: ""
-#    lore-translation-key: ""
+        display-name: ' '
+    slots: [ 0, 1, 2, 3, 5, 6, 7, 8, 45, 46, 47, 48, 49, 50, 51, 52, 53 ]
+  MARKET_ITEM:
+    slots: [ 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44 ]
+    lore-translation-key: 'inventory.marketplace.market-item.lore'
+    bundle: 'message/message'

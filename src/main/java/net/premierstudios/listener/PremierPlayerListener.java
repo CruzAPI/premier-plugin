@@ -23,6 +23,6 @@ public class PremierPlayerListener implements Listener
 		}
 		
 		PremierPlayer premierPlayer = premierPlugin.getPlayerListener().get(player);
-		premierPlayer.closePremierInventory();
+		premierPlayer.setPremierInventory(null);
 	}
 }
