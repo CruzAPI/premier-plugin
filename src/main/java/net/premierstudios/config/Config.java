@@ -8,5 +8,9 @@ public interface Config
 {
 	File getFile();
 	YamlConfiguration getYamlConfiguration();
-	YamlConfiguration reload();
+	
+	default YamlConfiguration reload()
+	{
+		return YamlConfiguration.loadConfiguration(getFile());
+	}
 }

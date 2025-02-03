@@ -28,10 +28,4 @@ public enum InventoryConfigEnum implements InventoryConfig
 	{
 		return yamlConfiguration == null ? yamlConfiguration = reload() : yamlConfiguration;
 	}
-	
-	@Override
-	public final YamlConfiguration reload()
-	{
-		return YamlConfiguration.loadConfiguration(file);
-	}
 }

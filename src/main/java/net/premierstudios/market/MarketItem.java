@@ -1,14 +1,18 @@
 package net.premierstudios.market;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.premierstudios.PremierPlugin;
 import net.premierstudios.inventory.BlackmarketInventory;
 import net.premierstudios.inventory.MarketplaceInventory;
+import org.bson.Document;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Base64;
 import java.util.UUID;
 
 import static net.premierstudios.util.PremierNamespacedKey.*;
@@ -16,6 +20,7 @@ import static org.bukkit.persistence.PersistentDataType.STRING;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class MarketItem
 {
 	private final UUID uniqueId;
@@ -28,11 +33,7 @@ public class MarketItem
 	
 	public MarketItem(UUID sellerUniqueId, ItemStack itemStack, double price)
 	{
-		this.uniqueId = UUID.randomUUID();
-		this.sellerUniqueId = sellerUniqueId;
-		this.originalItemStack = itemStack.clone();
-		this.itemStack = itemStack;
-		this.price = price;
+		this(UUID.randomUUID(), sellerUniqueId, itemStack.clone(), itemStack, price, false);
 		
 		ItemMeta meta = itemStack.getItemMeta();
 		meta.getPersistentDataContainer().set(MARKET_ITEM_UUID, STRING, uniqueId.toString());

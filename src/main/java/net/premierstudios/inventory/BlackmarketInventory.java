@@ -4,10 +4,9 @@ import net.milkbowl.vault.economy.Economy;
 import net.premierstudios.PremierPlugin;
 import net.premierstudios.config.InventoryConfig;
 import net.premierstudios.config.ItemConfig;
+import net.premierstudios.market.MarketItem;
 import net.premierstudios.message.PremierMessage;
 import net.premierstudios.player.PremierPlayer;
-import net.premierstudios.market.MarketItem;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -86,12 +85,10 @@ public class BlackmarketInventory extends PremierInventory<BlackmarketInventory>
 			@Override
 			public void onCurrentItemClick(BlackmarketInventory blackmarketInventory, InventoryClickEvent event)
 			{
-				Bukkit.broadcastMessage("AA");
 				if(event.getClick() != ClickType.LEFT)
 				{
 					return;
 				}
-				Bukkit.broadcastMessage("bb");
 				
 				PremierPlayer premierPlayer = blackmarketInventory.getPremierPlayer();
 				premierPlayer.openPremierInventory(new MarketplaceInventory(premierPlayer));

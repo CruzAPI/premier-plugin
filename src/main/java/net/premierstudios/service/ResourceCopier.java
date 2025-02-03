@@ -15,12 +15,17 @@ public class ResourceCopier
 {
 	private final PremierPlugin premierPlugin;
 	
-	public void copyResources(String resourceFolder, boolean replace)
+	public void copyFile(String path, boolean replace)
 	{
-		copyResources(resourceFolder, premierPlugin.getDataFolder(), replace);
+		copyResources(path, false, premierPlugin.getDataFolder(), replace);
 	}
 	
-	public void copyResources(String resourceFolder, File outputFolder, boolean replace)
+	public void copyDir(String path, boolean replace)
+	{
+		copyResources(path, true, premierPlugin.getDataFolder(), replace);
+	}
+	
+	public void copyResources(String path, boolean dir, File outputFolder, boolean replace)
 	{
 		if(!outputFolder.exists())
 		{
@@ -41,7 +46,7 @@ public class ResourceCopier
 					JarEntry entry = entries.nextElement();
 					String name = entry.getName();
 					
-					if(name.startsWith(resourceFolder + "/") && !entry.isDirectory())
+					if((dir && name.startsWith(path + "/") || !dir && name.equals(path)) && !entry.isDirectory())
 					{
 						File destinationFile = new File(outputFolder, name);
 						

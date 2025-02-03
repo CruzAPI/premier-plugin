@@ -3,15 +3,12 @@ package net.premierstudios.inventory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.premierstudios.PremierPlugin;
 import net.premierstudios.config.InventoryConfig;
 import net.premierstudios.config.ItemConfig;
 import net.premierstudios.player.PremierPlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -68,7 +65,6 @@ public abstract class PremierInventory<I extends PremierInventory<I>>
 	{
 		if(premierPlayer.getOpenInventory().getTopInventory() != inventory)
 		{
-			Bukkit.broadcastMessage("open");
 			premierPlayer.openInventory(inventory);
 		}
 		
@@ -79,7 +75,6 @@ public abstract class PremierInventory<I extends PremierInventory<I>>
 	{
 		if(premierPlayer.getPremierInventory() == this)
 		{
-			Bukkit.broadcastMessage("close");
 			premierPlayer.closeInventory();
 			premierPlayer.setPremierInventory(null);
 		}

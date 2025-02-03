@@ -2,6 +2,7 @@ package net.premierstudios.service;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import net.premierstudios.PremierPlugin;
 import net.premierstudios.market.MarketItem;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +18,8 @@ import static org.bukkit.persistence.PersistentDataType.STRING;
 public class MarketManager
 {
 	@Getter
-	private final List<MarketItem> marketItemList = new ArrayList<>();
+	@Setter
+	private List<MarketItem> marketItemList = new ArrayList<>();
 	private final Map<UUID, MarketItem> marketItemByUniqueId = new HashMap<>();
 	
 	private final PremierPlugin premierPlugin;

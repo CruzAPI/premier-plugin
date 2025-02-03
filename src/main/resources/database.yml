@@ -1,0 +1,6 @@
+host: "Premier-mongodb"
+port: 27017
+database: "premier"
+user: "admin"
+password: "senha"
+authSource: "admin"
