@@ -12,7 +12,6 @@ import net.milkbowl.vault.permission.Permission;
 import net.premierstudios.command.BlackmarketCommand;
 import net.premierstudios.command.MarketplaceCommand;
 import net.premierstudios.command.SellCommand;
-import net.premierstudios.command.TestCommand;
 import net.premierstudios.config.DatabaseConfig;
 import net.premierstudios.listener.PlayerListener;
 import net.premierstudios.listener.PremierInventoryListener;
@@ -87,7 +86,6 @@ public class PremierPlugin extends JavaPlugin
 	
 	private void registerCommands()
 	{
-		registerBasicCommand("test", new TestCommand(this));
 		registerBasicCommand("sell", new SellCommand(this));
 		registerBasicCommand("marketplace", new MarketplaceCommand(this));
 		registerBasicCommand("blackmarket", new BlackmarketCommand(this));
