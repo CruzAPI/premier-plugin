@@ -94,6 +94,8 @@ public class MarketManager
 			}
 		}
 		
+		premierPlugin.getLogger().info("Blackmarket was refreshed with " + blackmarketCount + " random items from Marketplace.");
+		
 		return blackmarketCount;
 	}
 }

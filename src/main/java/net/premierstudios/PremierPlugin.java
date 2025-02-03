@@ -19,6 +19,7 @@ import net.premierstudios.listener.PremierPlayerListener;
 import net.premierstudios.listener.WorldListener;
 import net.premierstudios.repository.MarketItemRepository;
 import net.premierstudios.service.*;
+import net.premierstudios.task.BlackmarketRefreshTask;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -76,6 +77,8 @@ public class PremierPlugin extends JavaPlugin
 		
 		registerCommands();
 		registerListeners();
+		
+		scheduleTasks();
 	}
 	
 	@NotNull
@@ -117,5 +120,10 @@ public class PremierPlugin extends JavaPlugin
 	private void registerListener(Listener listener)
 	{
 		getServer().getPluginManager().registerEvents(listener, this);
+	}
+	
+	private void scheduleTasks()
+	{
+		new BlackmarketRefreshTask(this).runTaskTimer(this, 30L * 20L, 60L * 60L * 20L);
 	}
 }
