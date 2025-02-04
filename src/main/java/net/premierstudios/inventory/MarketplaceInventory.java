@@ -147,6 +147,8 @@ public class MarketplaceInventory extends PremierInventory<MarketplaceInventory>
 						final double salePrice = marketItem.getPrice();
 						final double purchasePrice = marketItem.getPrice();
 						
+						ctx.salePrice(salePrice).purchasePrice(purchasePrice);
+						
 						if(marketplaceInventory.getPremierPlayer().getUniqueId().equals(marketItem.getSellerUniqueId()))
 						{
 							marketplaceInventory.close();
