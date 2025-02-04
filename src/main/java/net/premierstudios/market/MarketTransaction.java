@@ -2,14 +2,12 @@ package net.premierstudios.market;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
-@RequiredArgsConstructor
 @AllArgsConstructor
 public class MarketTransaction
 {

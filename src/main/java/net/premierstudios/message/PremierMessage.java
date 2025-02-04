@@ -1,16 +1,14 @@
 package net.premierstudios.message;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Formatter;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.premierstudios.PremierPlugin;
 import net.premierstudios.i18n.MessageBundle;
 import net.premierstudios.i18n.MessageContext;
-import net.premierstudios.i18n.MessageUtil;
 import net.premierstudios.i18n.TranslatableMessage;
 import net.premierstudios.market.MarketItem;
 import org.bukkit.Material;
@@ -18,6 +16,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +41,6 @@ public enum PremierMessage implements TranslatableMessage
 	COMMAND_SELL_INVALID_PRICE("command.sell.invalid-price"),
 	COMMAND_SELL_POSITIVE_PRICE("command.sell.positive-price"),
 	COMMAND_SELL_HOLD_ITEM("command.sell.hold-item"),
-	COMMAND_SELL_ITEM_SOLD("command.sell.item-sold"),
 	COMMAND_SELL_ITEM_LISTED("command.sell.item-listed"),
 	COMMAND_SELL_USAGE("command.sell.usage"),
 	
@@ -52,6 +50,10 @@ public enum PremierMessage implements TranslatableMessage
 	COMMAND_BLACKMARKET_REFRESH("command.blackmarket.refresh"),
 	COMMAND_BLACKMARKET_INSUFFICIENT("command.blackmarket.insufficient"),
 	
+	COMMAND_TRANSACTIONS_EMPTY("command.transactions.empty"),
+	COMMAND_TRANSACTIONS_HEADER("command.transactions.header"),
+	COMMAND_TRANSACTIONS_SOLD_ROW("command.transactions.sold-row"),
+	COMMAND_TRANSACTIONS_BOUGHT_ROW("command.transactions.bought-row"),
 	COMMAND_TRANSACTIONS_USAGE("command.transactions.usage"),
 	;
 	
@@ -79,9 +81,11 @@ public enum PremierMessage implements TranslatableMessage
 		private Double blackmarketPrice;
 		private Double salePrice;
 		private Double purchasePrice;
+		private OfflinePlayer buyer;
 		private OfflinePlayer seller;
 		private Material material;
 		private Integer count;
+		private TemporalAccessor date;
 		
 		public Context marketItem(MarketItem marketItem)
 		{
@@ -112,6 +116,11 @@ public enum PremierMessage implements TranslatableMessage
 				tagResolverList.add(component("seller", displayName(seller)));
 			}
 			
+			if(buyer != null)
+			{
+				tagResolverList.add(component("buyer", displayName(buyer)));
+			}
+			
 			if(price != null)
 			{
 				tagResolverList.add(number("price", price));
@@ -140,6 +149,11 @@ public enum PremierMessage implements TranslatableMessage
 			if(material != null)
 			{
 				tagResolverList.add(component("material", translatable(material.translationKey())));
+			}
+			
+			if(date != null)
+			{
+				tagResolverList.add(Formatter.date("date", date));
 			}
 			
 			return tagResolverList.toArray(TagResolver[]::new);

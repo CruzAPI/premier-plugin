@@ -31,6 +31,11 @@ public class MarketTransactionLogger
 		marketTransactions.add(marketTransaction);
 	}
 	
+	public List<MarketTransaction> getTransactionsFromUser(PremierPlayer premierPlayer)
+	{
+		return getTransactionsFromUser(premierPlayer.getUniqueId());
+	}
+	
 	public List<MarketTransaction> getTransactionsFromUser(UUID userUniqueId)
 	{
 		return marketTransactions.stream()

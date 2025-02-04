@@ -43,7 +43,7 @@ public class MarketItemRepository
 	public List<MarketItem> getAll()
 	{
 		List<MarketItem> marketItemList = marketItemCollection.find().map(this::documentToMarketItem).into(new ArrayList<>());
-		premierPlugin.getLogger().info("Returning " + marketItemList.size() + " MarketItems from DB.");
+		premierPlugin.getLogger().info("Returning " + marketItemList.size() + " market items from DB.");
 		return marketItemList;
 	}
 	
