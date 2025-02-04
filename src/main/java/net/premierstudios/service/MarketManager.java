@@ -11,6 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.function.Predicate.not;
 import static net.premierstudios.util.PremierNamespacedKey.MARKET_ITEM_UUID;
@@ -20,9 +22,8 @@ import static org.bukkit.persistence.PersistentDataType.STRING;
 public class MarketManager
 {
 	@Getter
-	@Setter
 	private List<MarketItem> marketItemList = new ArrayList<>();
-	private final Map<UUID, MarketItem> marketItemByUniqueId = new HashMap<>();
+	private Map<UUID, MarketItem> marketItemByUniqueId = new HashMap<>();
 	
 	private final PremierPlugin premierPlugin;
 	
@@ -104,5 +105,11 @@ public class MarketManager
 		premierPlugin.getServer().getPluginManager().callEvent(new BlackmarketRefreshEvent());
 		
 		return blackmarketCount;
+	}
+	
+	public void setMarketItems(Collection<MarketItem> marketItems)
+	{
+		marketItemList = new ArrayList<>(marketItems);
+		marketItemByUniqueId = marketItems.stream().collect(Collectors.toMap(MarketItem::getUniqueId, Function.identity()));
 	}
 }

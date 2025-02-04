@@ -74,7 +74,7 @@ public class PremierPlugin extends JavaPlugin
 		marketItemRepository = new MarketItemRepository(this);
 		marketTransactionRepository = new MarketTransactionRepository(this);
 		
-		marketManager.setMarketItemList(marketItemRepository.getAll());
+		marketManager.setMarketItems(marketItemRepository.getAll());
 		marketTransactionLogger.setMarketTransactions(marketTransactionRepository.getAll());
 		
 		registerCommands();
