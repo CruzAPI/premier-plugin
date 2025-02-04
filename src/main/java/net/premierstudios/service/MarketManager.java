@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.premierstudios.PremierPlugin;
+import net.premierstudios.event.BlackmarketRefreshEvent;
+import net.premierstudios.event.MarketItemUpdateEvent;
 import net.premierstudios.market.MarketItem;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -67,12 +69,16 @@ public class MarketManager
 		
 		marketItemByUniqueId.put(marketItem.getUniqueId(), marketItem);
 		marketItemList.add(marketItem);
+		
+		premierPlugin.getServer().getPluginManager().callEvent(new MarketItemUpdateEvent(marketItem));
 	}
 	
 	public void removeMarketItem(MarketItem marketItem)
 	{
 		marketItemByUniqueId.remove(marketItem.getUniqueId());
 		marketItemList.remove(marketItem);
+		
+		premierPlugin.getServer().getPluginManager().callEvent(new MarketItemUpdateEvent(marketItem));
 	}
 	
 	public int refreshBlackmarket()
@@ -95,6 +101,7 @@ public class MarketManager
 		}
 		
 		premierPlugin.getLogger().info("Blackmarket was refreshed with " + blackmarketCount + " random items from Marketplace.");
+		premierPlugin.getServer().getPluginManager().callEvent(new BlackmarketRefreshEvent());
 		
 		return blackmarketCount;
 	}

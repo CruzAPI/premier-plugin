@@ -14,10 +14,7 @@ import net.premierstudios.command.MarketplaceCommand;
 import net.premierstudios.command.SellCommand;
 import net.premierstudios.command.TransactionsCommand;
 import net.premierstudios.config.DatabaseConfig;
-import net.premierstudios.listener.PlayerListener;
-import net.premierstudios.listener.PremierInventoryListener;
-import net.premierstudios.listener.PremierPlayerListener;
-import net.premierstudios.listener.WorldListener;
+import net.premierstudios.listener.*;
 import net.premierstudios.repository.MarketItemRepository;
 import net.premierstudios.repository.MarketTransactionRepository;
 import net.premierstudios.service.*;
@@ -124,6 +121,8 @@ public class PremierPlugin extends JavaPlugin
 	
 	private void registerListeners()
 	{
+		registerListener(new BlackmarketInventoryListener(this));
+		registerListener(new MarketplaceInventoryListener(this));
 		registerListener(playerListener = new PlayerListener(this));
 		registerListener(new PremierInventoryListener(this));
 		registerListener(new PremierPlayerListener(this));

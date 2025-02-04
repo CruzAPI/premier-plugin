@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -43,5 +44,10 @@ public class PlayerListener implements Listener
 	public PremierPlayer get(UUID uniqueId)
 	{
 		return premierPlayers.get(uniqueId);
+	}
+	
+	public Collection<PremierPlayer> getAll()
+	{
+		return premierPlayers.values();
 	}
 }
