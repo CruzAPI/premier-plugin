@@ -1,12 +1,16 @@
 package net.premierstudios.market;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class MarketTransaction
 {
 	private final UUID uniqueId;
@@ -15,33 +19,27 @@ public class MarketTransaction
 	private final ItemStack originalItemStack;
 	private final double price;
 	private final double blackmarketPrice;
+	private final double salePrice;
+	private final double purchasePrice;
 	private final boolean blackmarket;
 	private final LocalDateTime creationDate;
 	
-	public MarketTransaction(MarketItem marketItem, UUID buyerUniqueId)
+	public MarketTransaction(MarketItem marketItem, UUID buyerUniqueId, double salePrice, double purchasePrice)
 	{
-		this(marketItem.getSellerUniqueId(),
+		this(UUID.randomUUID(),
+				marketItem.getSellerUniqueId(),
 				buyerUniqueId,
 				marketItem.getOriginalItemStack(),
 				marketItem.getPrice(),
 				marketItem.getBlackmarketPrice(),
-				marketItem.isBlackmarket());
+				salePrice,
+				purchasePrice,
+				marketItem.isBlackmarket(),
+				LocalDateTime.now());
 	}
 	
-	public MarketTransaction(UUID sellerUniqueId,
-			UUID buyerUniqueId,
-			ItemStack originalItemStack,
-			double price,
-			double blackmarketPrice,
-			boolean blackmarket)
+	public boolean isUserInvolved(UUID userUniqueId)
 	{
-		this.uniqueId = UUID.randomUUID();
-		this.sellerUniqueId = sellerUniqueId;
-		this.buyerUniqueId = buyerUniqueId;
-		this.originalItemStack = originalItemStack;
-		this.price = price;
-		this.blackmarketPrice = blackmarketPrice;
-		this.blackmarket = blackmarket;
-		this.creationDate = LocalDateTime.now();
+		return userUniqueId.equals(sellerUniqueId) || userUniqueId.equals(buyerUniqueId);
 	}
 }

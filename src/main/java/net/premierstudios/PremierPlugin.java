@@ -18,6 +18,7 @@ import net.premierstudios.listener.PremierInventoryListener;
 import net.premierstudios.listener.PremierPlayerListener;
 import net.premierstudios.listener.WorldListener;
 import net.premierstudios.repository.MarketItemRepository;
+import net.premierstudios.repository.MarketTransactionRepository;
 import net.premierstudios.service.*;
 import net.premierstudios.task.BlackmarketRefreshTask;
 import org.bukkit.event.Listener;
@@ -50,6 +51,7 @@ public class PremierPlugin extends JavaPlugin
 	private MongoClient mongoClient;
 	
 	private MarketItemRepository marketItemRepository;
+	private MarketTransactionRepository marketTransactionRepository;
 	
 	@Override
 	public void onEnable()
@@ -72,13 +74,22 @@ public class PremierPlugin extends JavaPlugin
 		mongoClient = MongoClients.create(new ConnectionString(databaseConfig.getMongoUrl()));
 		
 		marketItemRepository = new MarketItemRepository(this);
+		marketTransactionRepository = new MarketTransactionRepository(this);
 		
 		marketManager.setMarketItemList(marketItemRepository.getAll());
+		marketTransactionLogger.setMarketTransactions(marketTransactionRepository.getAll());
 		
 		registerCommands();
 		registerListeners();
 		
 		scheduleTasks();
+	}
+	
+	@Override
+	public void onDisable()
+	{
+		marketItemRepository.saveAll(marketManager.getMarketItemList());
+		marketTransactionRepository.saveAll(marketTransactionLogger.getMarketTransactions());
 	}
 	
 	@NotNull

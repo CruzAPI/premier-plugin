@@ -7,9 +7,11 @@ import org.bson.Document;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+
+import static net.premierstudios.util.ItemStackUtil.deserializeItemStackBase64;
+import static net.premierstudios.util.ItemStackUtil.serializeItemStackBase64;
 
 public class MarketItemRepository
 {
@@ -49,8 +51,8 @@ public class MarketItemRepository
 	{
 		return new Document("uniqueId", item.getUniqueId().toString())
 				.append("sellerUniqueId", item.getSellerUniqueId().toString())
-				.append("originalItemStack", serializeItemStack(item.getOriginalItemStack()))
-				.append("itemStack", serializeItemStack(item.getItemStack()))
+				.append("originalItemStack", serializeItemStackBase64(item.getOriginalItemStack()))
+				.append("itemStack", serializeItemStackBase64(item.getItemStack()))
 				.append("price", item.getPrice())
 				.append("blackmarket", item.isBlackmarket());
 	}
@@ -59,21 +61,11 @@ public class MarketItemRepository
 	{
 		UUID uniqueId = UUID.fromString(doc.getString("uniqueId"));
 		UUID sellerUniqueId = UUID.fromString(doc.getString("sellerUniqueId"));
-		ItemStack originalItemStack = deserializeItemStack(doc.getString("originalItemStack"));
-		ItemStack itemStack = deserializeItemStack(doc.getString("itemStack"));
+		ItemStack originalItemStack = deserializeItemStackBase64(doc.getString("originalItemStack"));
+		ItemStack itemStack = deserializeItemStackBase64(doc.getString("itemStack"));
 		double price = doc.getDouble("price");
 		boolean blackmarket = doc.getBoolean("blackmarket");
 		
 		return new MarketItem(uniqueId, sellerUniqueId, originalItemStack, itemStack, price, blackmarket);
-	}
-	
-	private String serializeItemStack(ItemStack itemStack)
-	{
-		return Base64.getEncoder().encodeToString(itemStack.serializeAsBytes());
-	}
-	
-	private ItemStack deserializeItemStack(String data)
-	{
-		return ItemStack.deserializeBytes(Base64.getDecoder().decode(data));
 	}
 }

@@ -1,28 +1,41 @@
 package net.premierstudios.service;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import net.premierstudios.PremierPlugin;
 import net.premierstudios.market.MarketItem;
 import net.premierstudios.market.MarketTransaction;
 import net.premierstudios.player.PremierPlayer;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
+
+import static java.util.Comparator.comparing;
 
 @RequiredArgsConstructor
+@Getter
 public class MarketTransactionLogger
 {
 	private final PremierPlugin premierPlugin;
 	
-	public Set<MarketTransaction> unsavedMarketTransactions = new LinkedHashSet<>();
+	@Setter
+	private Set<MarketTransaction> marketTransactions = new LinkedHashSet<>();
 	
-	public void logTransaction(MarketItem marketItem, PremierPlayer buyer)
+	public void logTransaction(MarketItem marketItem, PremierPlayer buyer, double salePrice, double purchasePrice)
 	{
-		logTransaction(new MarketTransaction(marketItem, buyer.getUniqueId()));
+		logTransaction(new MarketTransaction(marketItem, buyer.getUniqueId(), salePrice, purchasePrice));
 	}
 	
 	public void logTransaction(MarketTransaction marketTransaction)
 	{
-		unsavedMarketTransactions.add(marketTransaction);
+		marketTransactions.add(marketTransaction);
+	}
+	
+	public List<MarketTransaction> getTransactionsFromUser(UUID userUniqueId)
+	{
+		return marketTransactions.stream()
+				.filter(marketTransaction -> marketTransaction.isUserInvolved(userUniqueId))
+				.sorted(comparing(MarketTransaction::getCreationDate).reversed())
+				.toList();
 	}
 }

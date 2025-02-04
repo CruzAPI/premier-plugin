@@ -169,7 +169,7 @@ public class MarketplaceInventory extends PremierInventory<MarketplaceInventory>
 						player.getInventory().addItem(marketItem.getOriginalItemStack());
 						
 						premierPlugin.getMarketManager().removeMarketItem(marketItem);
-						premierPlugin.getMarketTransactionLogger().logTransaction(marketItem, premierPlayer);
+						premierPlugin.getMarketTransactionLogger().logTransaction(marketItem, premierPlayer, salePrice, purchasePrice);
 						
 						premierPlayer.sendMessage(PURCHASE_SUCCESSFUL, ctx);
 						

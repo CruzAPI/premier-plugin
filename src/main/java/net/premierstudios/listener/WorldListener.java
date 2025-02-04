@@ -20,5 +20,6 @@ public class WorldListener implements Listener
 		}
 		
 		premierPlugin.getMarketItemRepository().saveAll(premierPlugin.getMarketManager().getMarketItemList());
+		premierPlugin.getMarketTransactionRepository().saveAll(premierPlugin.getMarketTransactionLogger().getMarketTransactions());
 	}
 }
