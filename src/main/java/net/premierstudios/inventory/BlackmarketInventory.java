@@ -124,6 +124,7 @@ public class BlackmarketInventory extends PremierInventory<BlackmarketInventory>
 				
 				if(!economy.has(player, marketItem.getPrice()))
 				{
+					blackmarketInventory.close();
 					blackmarketInventory.getPremierPlayer().sendMessage(INSUFFICIENT_BALANCE);
 					return;
 				}

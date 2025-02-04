@@ -158,6 +158,7 @@ public class MarketplaceInventory extends PremierInventory<MarketplaceInventory>
 						
 						if(!economy.has(player, purchasePrice))
 						{
+							marketplaceInventory.close();
 							marketplaceInventory.getPremierPlayer().sendMessage(INSUFFICIENT_BALANCE, ctx);
 							return;
 						}
