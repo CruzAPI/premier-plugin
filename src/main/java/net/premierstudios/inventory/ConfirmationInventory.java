@@ -1,6 +1,7 @@
 package net.premierstudios.inventory;
 
 import net.premierstudios.config.InventoryConfig;
+import net.premierstudios.message.PremierMessage;
 import net.premierstudios.player.PremierPlayer;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -11,6 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static net.premierstudios.config.InventoryConfigEnum.CONFIRMATION;
+import static net.premierstudios.message.PremierMessage.OPERATION_CANCELLED;
 
 public abstract class ConfirmationInventory extends PremierInventory<ConfirmationInventory>
 {
@@ -46,7 +48,7 @@ public abstract class ConfirmationInventory extends PremierInventory<Confirmatio
 	public void cancel()
 	{
 		close();
-		premierPlayer.sendMessage("Operation cancelled.");
+		premierPlayer.sendMessage(OPERATION_CANCELLED);
 	}
 	
 	public enum ConfirmationIcon implements Icon<ConfirmationInventory>

@@ -4,10 +4,8 @@ import net.milkbowl.vault.economy.Economy;
 import net.premierstudios.PremierPlugin;
 import net.premierstudios.config.InventoryConfig;
 import net.premierstudios.config.ItemConfig;
-import net.premierstudios.market.MarketTransaction;
-import net.premierstudios.message.PremierMessage;
-import net.premierstudios.player.PremierPlayer;
 import net.premierstudios.market.MarketItem;
+import net.premierstudios.player.PremierPlayer;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -22,6 +20,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static net.premierstudios.config.InventoryConfigEnum.MARKETPLACE;
+import static net.premierstudios.message.PremierMessage.*;
 
 public class MarketplaceInventory extends PremierInventory<MarketplaceInventory>
 {
@@ -50,10 +49,7 @@ public class MarketplaceInventory extends PremierInventory<MarketplaceInventory>
 			{
 				int slot = slots[i];
 				MarketItem marketItem = marketplaceItems.get(i);
-				PremierMessage.Context ctx = PremierMessage.Context.builder()
-						.seller(marketItem.getSeller())
-						.price(marketItem.getPrice())
-						.build();
+				Context ctx = new Context().marketItem(marketItem);
 				inventory.setItem(slot, marketItemConfig.getTranslatedItemStack(premierPlayer, marketItem.getItemStack(), ctx));
 			}
 		}
@@ -119,13 +115,13 @@ public class MarketplaceInventory extends PremierInventory<MarketplaceInventory>
 				if(marketplaceInventory.getPremierPlayer().getUniqueId().equals(marketItem.getSellerUniqueId()))
 				{
 					marketplaceInventory.close();
-					marketplaceInventory.getPremierPlayer().sendMessage("You’re trying to boost your own sales? Not today!");
+					marketplaceInventory.getPremierPlayer().sendMessage(SELF_PURCHASE);
 					return;
 				}
 				
 				if(!economy.has(player, marketItem.getPrice()))
 				{
-					marketplaceInventory.getPremierPlayer().sendMessage("Insufficient balance!");
+					marketplaceInventory.getPremierPlayer().sendMessage(INSUFFICIENT_BALANCE);
 					return;
 				}
 				
@@ -136,43 +132,50 @@ public class MarketplaceInventory extends PremierInventory<MarketplaceInventory>
 					{
 						this.close();
 						
+						Context ctx = new Context().player(player);
+						
 						MarketItem marketItem = premierPlugin.getMarketManager().getMarketItem(currentItem);
 						
 						if(marketItem == null)
 						{
-							marketplaceInventory.getPremierPlayer().sendMessage("This item is not for sale anymore.");
+							marketplaceInventory.getPremierPlayer().sendMessage(ITEM_NOT_FOR_SALE_ANYMORE, ctx);
 							return;
 						}
+						
+						ctx.marketItem(marketItem);
+						
+						final double salePrice = marketItem.getPrice();
+						final double purchasePrice = marketItem.getPrice();
 						
 						if(marketplaceInventory.getPremierPlayer().getUniqueId().equals(marketItem.getSellerUniqueId()))
 						{
 							marketplaceInventory.close();
-							marketplaceInventory.getPremierPlayer().sendMessage("You’re trying to boost your own sales? Not today!");
+							marketplaceInventory.getPremierPlayer().sendMessage(SELF_PURCHASE, ctx);
 							return;
 						}
 						
-						if(!economy.has(player, marketItem.getPrice()))
+						if(!economy.has(player, purchasePrice))
 						{
-							marketplaceInventory.getPremierPlayer().sendMessage("Insufficient balance!");
+							marketplaceInventory.getPremierPlayer().sendMessage(INSUFFICIENT_BALANCE, ctx);
 							return;
 						}
 						
 						OfflinePlayer seller = marketItem.getSeller();
 						PremierPlayer sellerPremierPlayer = Optional.ofNullable(seller.getPlayer()).map(premierPlugin.getPlayerListener()::get).orElse(null);
 						
-						economy.withdrawPlayer(player, marketItem.getPrice());
-						economy.depositPlayer(seller, marketItem.getPrice());
+						economy.withdrawPlayer(player, purchasePrice);
+						economy.depositPlayer(seller, salePrice);
 						
 						player.getInventory().addItem(marketItem.getOriginalItemStack());
 						
 						premierPlugin.getMarketManager().removeMarketItem(marketItem);
 						premierPlugin.getMarketTransactionLogger().logTransaction(marketItem, premierPlayer);
 						
-						premierPlayer.sendMessage("Purchase successful! You bought " + marketItem.getItemStack().getType() + " for $" + marketItem.getPrice() + ".");
+						premierPlayer.sendMessage(PURCHASE_SUCCESSFUL, ctx);
 						
 						if(sellerPremierPlayer != null)
 						{
-							sellerPremierPlayer.sendMessage("Sale complete! You sold " + marketItem.getItemStack().getType() + " for $" + marketItem.getPrice() + ".");
+							sellerPremierPlayer.sendMessage(SALE_COMPLETE, ctx);
 						}
 					}
 				});

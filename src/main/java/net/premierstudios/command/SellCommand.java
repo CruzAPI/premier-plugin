@@ -5,10 +5,13 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import lombok.RequiredArgsConstructor;
 import net.premierstudios.PremierPlugin;
 import net.premierstudios.market.MarketItem;
+import net.premierstudios.player.PremierPlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import static net.premierstudios.message.PremierMessage.*;
 
 @RequiredArgsConstructor
 public class SellCommand implements BasicCommand
@@ -23,6 +26,8 @@ public class SellCommand implements BasicCommand
 			return;
 		}
 		
+		PremierPlayer premierPlayer = premierPlugin.getPlayerListener().get(player);
+		
 		if(args.length == 1)
 		{
 			final double price;
@@ -33,13 +38,13 @@ public class SellCommand implements BasicCommand
 			}
 			catch(NumberFormatException e)
 			{
-				player.sendMessage("Invalid price format.");
+				premierPlayer.sendMessage(COMMAND_SELL_INVALID_PRICE);
 				return;
 			}
 			
 			if(price <= 0.0D)
 			{
-				player.sendMessage("Price must be positive.");
+				premierPlayer.sendMessage(COMMAND_SELL_POSITIVE_PRICE);
 				return;
 			}
 			
@@ -47,7 +52,7 @@ public class SellCommand implements BasicCommand
 			
 			if(itemToSell.isEmpty())
 			{
-				player.sendMessage("You need to hold an item.");
+				premierPlayer.sendMessage(COMMAND_SELL_HOLD_ITEM);
 				return;
 			}
 			
@@ -56,11 +61,11 @@ public class SellCommand implements BasicCommand
 			premierPlugin.getMarketManager().addMarketItem(marketItem);
 			
 			itemToSell.setAmount(0);
-			player.sendMessage("Your item has been added to marketplace.");
+			premierPlayer.sendMessage(COMMAND_SELL_ITEM_LISTED);
 		}
 		else
 		{
-			player.sendMessage("Usage: /sell <price>");
+			premierPlayer.sendMessage(COMMAND_SELL_USAGE);
 		}
 	}
 	

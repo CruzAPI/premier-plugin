@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import static net.premierstudios.message.PremierMessage.*;
+
 @RequiredArgsConstructor
 public class BlackmarketCommand implements BasicCommand
 {
@@ -33,24 +35,26 @@ public class BlackmarketCommand implements BasicCommand
 		{
 			if(!premierPlugin.getPermission().has(player, "marketplace.blackmarket.refresh"))
 			{
-				player.sendMessage("Usage: /blackmarket");
+				premierPlayer.sendMessage(COMMAND_BLACKMARKET_USAGE);
 				return;
 			}
 			
 			int blackmarketCount = premierPlugin.getMarketManager().refreshBlackmarket();
 			
-			if(blackmarketCount <= 0)
+			Context ctx = new Context().count(blackmarketCount);
+			
+			if(blackmarketCount > 0)
 			{
-				player.sendMessage("Marketplace doesn't have enough items to be added to the black market.");
+				premierPlayer.sendMessage(COMMAND_BLACKMARKET_REFRESH, ctx);
 			}
 			else
 			{
-				player.sendMessage(blackmarketCount + " random items from market place are now available in the black market!");
+				premierPlayer.sendMessage(COMMAND_BLACKMARKET_INSUFFICIENT, ctx);
 			}
 		}
 		else
 		{
-			player.sendMessage("Usage: /blackmarket");
+			premierPlayer.sendMessage(COMMAND_BLACKMARKET_USAGE);
 		}
 	}
 	

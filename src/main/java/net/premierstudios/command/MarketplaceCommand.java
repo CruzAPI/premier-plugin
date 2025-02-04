@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import static net.premierstudios.message.PremierMessage.COMMAND_MARKETPLACE_USAGE;
+
 @RequiredArgsConstructor
 public class MarketplaceCommand implements BasicCommand
 {
@@ -31,7 +33,7 @@ public class MarketplaceCommand implements BasicCommand
 		}
 		else
 		{
-			player.sendMessage("Usage: /marketplace");
+			premierPlayer.sendMessage(COMMAND_MARKETPLACE_USAGE);
 		}
 	}
 	
