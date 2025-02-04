@@ -63,9 +63,9 @@ public class PremierPlugin extends JavaPlugin
 		propertiesLoader = new PropertiesLoader(this);
 		resourceCopier = new ResourceCopier(this);
 		
-		resourceCopier.copyDir("inventory", true);
-		resourceCopier.copyDir("message", true);
-		resourceCopier.copyFile("database.yml", true);
+		resourceCopier.copyDir("inventory", false);
+		resourceCopier.copyDir("message", false);
+		resourceCopier.copyFile("database.yml", false);
 		
 		databaseConfig = new DatabaseConfig(this);
 		
